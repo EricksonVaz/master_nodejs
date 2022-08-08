@@ -27,30 +27,24 @@ function renderIndexPage(title,htmlFile,styles=[],scripts=[]){
     `.trim();
 }
 
-module.exports.loadPage = function(pathName,res,statusCode=200){
-    let titleLoad,pathLoad,stylesLoad,scriptsLoad;
-
+module.exports.renderPage = function(pathName,res,statusCode=200){
     let routerFound = router[pathName];
-         
-    if(routerFound){
-        let {title,path,styles,scripts} = routerFound;
-        titleLoad = title;
-        pathLoad = path;
-        stylesLoad = styles;
-        scriptsLoad = scripts;
+    let {title,path,styles,scripts} = routerFound;
 
-        res.writeHead(statusCode,{"Content-Type":"text/html;charset=utf8"});
-    }else{
-        routerFound = router["/404"];
-        let {title,path,styles,scripts} = routerFound;
-        titleLoad = title;
-        pathLoad = path;
-        stylesLoad = styles;
-        scriptsLoad = scripts;
+    titleLoad = title;
+    pathLoad = path;
+    stylesLoad = styles;
+    scriptsLoad = scripts;
 
-        res.writeHead(404,{"Content-Type":"text/html;charset=utf8"});
-    }
+    res.writeHead(statusCode,{"Content-Type":"text/html;charset=utf8"});
 
     res.write(renderIndexPage(titleLoad,pathLoad,stylesLoad,scriptsLoad));
+    return res.end();
+}
+
+module.exports.redirect = function(pathName,res){
+    res.writeHead(302,{
+        'Location': pathName
+    });
     return res.end();
 }

@@ -19,7 +19,7 @@ module.exports = async function(res,req,isMethodAllowed,METHOD,endpoint){
                 try {
                     let formPostData = await formHandle(req);
                     let {fields,files} = formPostData;
-                    formController = new  routerFound.controller(fields);
+                    formController = new routerFound.controller(fields);
                     let formValidity = formController.checkValidity()
 
                     if(formValidity.length){
@@ -31,10 +31,11 @@ module.exports = async function(res,req,isMethodAllowed,METHOD,endpoint){
                         }
                         res.write(JSON.stringify(objResponse));
                     }else{
-                        let {status} = formController.submit();
+                        let postRequestResponse = await formController.post();
+                        let {status} = postRequestResponse;
                         res.writeHead(status,{"Content-Type":"application/json"});
                         let objResponse = {
-                            ...formController.submit()
+                            ...postRequestResponse
                         }
                         res.write(JSON.stringify(objResponse));
                     }
@@ -46,6 +47,8 @@ module.exports = async function(res,req,isMethodAllowed,METHOD,endpoint){
                     res.write(JSON.stringify(objResponse));
                     return res.end();
                 }
+            }else if(METHOD=="GET"){
+
             }
         }
     }else if(typeof isMethodAllowed == "undefined"){

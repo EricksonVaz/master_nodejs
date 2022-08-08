@@ -1,3 +1,4 @@
+const User = require("../models/user");
 const { getToken } = require("../utils/handleJWT");
 
 class LoginController {
@@ -47,15 +48,18 @@ class LoginController {
 
     }
 
-    submit(){
-        if(this.email=="ericksoncv1@outlook.com" && this.password=="123456"){
+    post(){
+        let userExist = User.login(this.email,this.password);
+        if(typeof userExist !== "undefined"){
             return {
                 status:200,
                 message:"Login realizado com sucesso",
-                jwt:getToken({email:this.email,name:"Erickson Vaz"})
+                jwt:getToken({
+                    email:userExist.email,
+                    name:userExist.name
+                })
             }
         }
-
         return {
             status:400,
             message:"Email ou senha invalidos",
