@@ -14,7 +14,7 @@ module.exports = function(req,res){
     const pathName = url.parse(req.url).pathname;
     const queryParams = url.parse(req.url,true).query;
     const method = req.method;
-    const cookies = cookie.parse(req.headers.cookie);
+    const cookies = cookie.parse(req.headers.cookie??'');
 
     runApp(req,res,method,pathName,queryParams,cookies);
     

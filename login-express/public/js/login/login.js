@@ -1,14 +1,14 @@
 (function(){
-    const formSignUp = document.querySelector(".form-signup");
+    const formLogin = document.querySelector(".form-login");
 
-    formSignUp.addEventListener("submit",(e)=>{
+    formLogin.addEventListener("submit",(e)=>{
         e.preventDefault();
 
-        let formData = new FormData(formSignUp);
+        let formData = new FormData(formLogin);
 
-        console.log(formData.get("name"),formData.get("email"),formData.get("password"), formData.get("confirm"));
+        console.log(formData.get("email"),formData.get("password"));
 
-        fetch("/api/signup",{
+        fetch("/api/login",{
             method:"POST",
             body:formData
         })
@@ -16,13 +16,13 @@
         .then((data)=>{
             let status = data.status;
 
-            if(status==201){
-                alert("utilizador criado com sucesso");
-                window.location.pathname = "/";
+            if(status==200){
+                Cookies.set('jwt', data.jwt, { expires: 7, path: '/' })
+                window.location.pathname = "/site/home";
             }else if(status==400){
                 let errorFeedback = data.errorFeedback;
                 errorFeedback.forEach((error)=>{
-                    let divFeedBack = formSignUp.querySelector(`[name="${error.formControll}"]`).nextElementSibling;
+                    let divFeedBack = formLogin.querySelector(`[name="${error.formControll}"]`).nextElementSibling;
                     divFeedBack.innerText = error.feedbackMSG;
                     setTimeout(()=>{
                         divFeedBack.innerText = "";
